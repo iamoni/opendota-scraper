@@ -7,12 +7,16 @@ from functions import *
 
 logging.basicConfig(filename='error.log', level=logging.ERROR)
 
+# connect to MongoDB
 conn = pymongo.MongoClient()
 db = conn.local
 dota = db.dota
 
+# load a list of already parsed matches
 match_list = np.load('match_list.npy')
 
+
+# actual scraping function 
 def scrape_loop():
     mt = read_matches()
     rand_match = gen_match(mt[0], mt[1], match_list)
@@ -26,8 +30,11 @@ def scrape_loop():
         time.sleep(0.4)
         logging.debug(f'{time.ctime()} Skipped empty match {rand_match}')
 
-x = 0
 
+
+# scrape loop, includes some extremely basic error handling and logging,
+# also saves the matches list to disk every now and then
+x = 0
 while True:
     try:
         scrape_loop()
